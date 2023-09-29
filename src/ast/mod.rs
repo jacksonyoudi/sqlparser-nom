@@ -4,6 +4,7 @@ pub mod statement;
 pub mod table_ref;
 
 /// An identifier
+/// 标识符
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Ident {
     pub value: String,

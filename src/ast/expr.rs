@@ -1,34 +1,43 @@
 use super::Ident;
 use crate::ast::statement::{OrderByExpr, SelectStatement};
 
+/// 表达式
 #[derive(Debug, Clone)]
 pub enum Expr {
+    // 字段
     ColumnRef {
         database: Option<Ident>,
         table: Option<Ident>,
         column: Ident,
     },
+    // 字面量
     Literal(Literal),
+    // 子查询
     Subquery(Box<SelectStatement>),
+    // 一目运算符
     UnaryOp {
         op: UnaryOp,
         expr: Box<Expr>,
     },
+    // 二目运算符
     BinaryOp {
         left: Box<Expr>,
         op: BinaryOp,
         right: Box<Expr>,
     },
+    // 函数
     Function {
         name: Ident,
         distinct: bool,
         args: Vec<FunctionArg>,
         over: Option<Window>,
     },
+
     Exists {
         not: bool,
         subquery: Box<SelectStatement>,
     },
+    //  嵌入查询
     InSubquery {
         not: bool,
         expr: Box<Expr>,
@@ -103,6 +112,7 @@ impl std::fmt::Display for Expr {
 }
 
 /// Binary operators
+/// 二目运算符
 #[derive(Debug, Copy, Clone)]
 pub enum BinaryOp {
     // + - * / %
@@ -145,6 +155,7 @@ impl std::fmt::Display for BinaryOp {
 }
 
 /// Literal values
+/// 字面量
 #[derive(Debug, Clone)]
 pub enum Literal {
     String(String),
@@ -162,6 +173,7 @@ impl std::fmt::Display for Literal {
 }
 
 /// Unary operators
+/// 单目运算符
 #[derive(Debug, Clone, Copy)]
 pub enum UnaryOp {
     Plus,
@@ -177,6 +189,7 @@ impl std::fmt::Display for UnaryOp {
     }
 }
 
+// 函数
 #[derive(Debug, Clone)]
 pub enum FunctionArg {
     Wildcard,
@@ -191,6 +204,7 @@ impl std::fmt::Display for FunctionArg {
     }
 }
 
+// 开窗函数
 #[derive(Debug, Clone)]
 pub enum Window {
     WindowRef(Ident),
